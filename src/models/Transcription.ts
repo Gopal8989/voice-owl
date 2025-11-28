@@ -33,9 +33,6 @@ const TranscriptionSchema: Schema = new Schema(
 );
 
 TranscriptionSchema.index({ createdAt: -1 });
-TranscriptionSchema.index({ createdAt: -1, source: 1 });
-TranscriptionSchema.index({ audioUrl: 1 });
-TranscriptionSchema.index({ source: 1, createdAt: -1 });
 
 export default mongoose.model<ITranscription>('Transcription', TranscriptionSchema);
 
