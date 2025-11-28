@@ -1,6 +1,3 @@
-/**
- * Enhanced Error Handling Middleware
- */
 import { Request, Response, NextFunction } from 'express';
 import { ErrorResponse } from '../types';
 import { AppError } from '../utils/errors';
@@ -15,7 +12,6 @@ export const errorHandler = (
 ): void => {
   const requestId = (req as RequestWithId).requestId;
 
-  // Handle known operational errors
   if (err instanceof AppError) {
     logger.error(`Operational error: ${err.message}`, err, { requestId });
     
@@ -31,18 +27,13 @@ export const errorHandler = (
     return;
   }
 
-  // Handle unknown errors
   logger.error('Unhandled error', err, { requestId });
-
-  // Import env to check environment
   const isProduction = process.env.NODE_ENV === 'production';
   
   const errorResponse: ErrorResponse = {
     success: false,
     error: 'Internal Server Error',
-    message: isProduction 
-      ? 'An unexpected error occurred' 
-      : err.message,
+    message: isProduction ? 'An unexpected error occurred' : err.message,
     statusCode: 500,
     ...(requestId && { requestId }),
   };

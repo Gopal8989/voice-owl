@@ -1,6 +1,3 @@
-/**
- * Request Validation Middleware using Joi
- */
 import { Request, Response, NextFunction } from 'express';
 import { ValidationError } from '../utils/errors';
 import {
@@ -9,9 +6,6 @@ import {
 } from '../validations';
 import { defaultValidationOptions } from '../validations/validationOptions';
 
-/**
- * Middleware to validate transcription request using Joi
- */
 export const validateTranscriptionRequest = (
   req: Request,
   _res: Response,
@@ -23,19 +17,14 @@ export const validateTranscriptionRequest = (
   );
 
   if (error) {
-    // Format Joi validation errors into a single message
     const errorMessages = error.details.map((detail) => detail.message).join(', ');
     return next(new ValidationError(errorMessages));
   }
 
-  // Replace req.body with validated and sanitized value
   req.body = value;
   next();
 };
 
-/**
- * Middleware to validate Azure transcription request using Joi
- */
 export const validateAzureTranscriptionRequest = (
   req: Request,
   _res: Response,
@@ -47,12 +36,10 @@ export const validateAzureTranscriptionRequest = (
   );
 
   if (error) {
-    // Format Joi validation errors into a single message
     const errorMessages = error.details.map((detail) => detail.message).join(', ');
     return next(new ValidationError(errorMessages));
   }
 
-  // Replace req.body with validated and sanitized value
   req.body = value;
   next();
 };

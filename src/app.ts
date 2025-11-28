@@ -1,6 +1,3 @@
-/**
- * Express Application Setup with Enhanced Features
- */
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -15,19 +12,12 @@ import { getBaseUrl, getSwaggerUrl } from './utils/swaggerHelpers';
 
 const app: Application = express();
 
-// Trust proxy for accurate IP addresses (important for rate limiting)
 app.set('trust proxy', 1);
-
-// Middleware
-app.use(helmet()); // Security headers
-app.use(cors()); // Enable CORS
-app.use(express.json({ limit: '10mb' })); // Parse JSON bodies with size limit
-app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Parse URL-encoded bodies
-
-// Request ID middleware (must be early in the chain)
+app.use(helmet());
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(requestIdMiddleware);
-
-// Rate limiting middleware
 app.use('/api', apiRateLimiter.middleware());
 
 /**
@@ -67,7 +57,6 @@ app.use('/api', apiRateLimiter.middleware());
  *             schema:
  *               $ref: '#/components/schemas/HealthResponse'
  */
-// Enhanced health check endpoint
 app.get('/health', (req, res) => {
   const dbStatus = getDatabaseStatus();
   const baseUrl = getBaseUrl(req);
@@ -135,7 +124,6 @@ app.get('/health', (req, res) => {
  *                   method: "POST"
  *                   description: "Create transcription using Azure Speech-to-Text"
  */
-// API Info endpoint - Returns Swagger URL and API information
 app.get('/api/info', (req, res) => {
   const baseUrl = getBaseUrl(req);
   
@@ -169,16 +157,12 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-// Swagger API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'VoiceOwl API Documentation',
 }));
 
-// API Routes
 app.use('/api', transcriptionRoutes);
-
-// Error handling (must be last)
 app.use(notFoundHandler);
 app.use(errorHandler);
 
